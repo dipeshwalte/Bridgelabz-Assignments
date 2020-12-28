@@ -1,0 +1,412 @@
+Repetition Practice Problems with for loop
+
+1. Write a program that takes a command-line argument n and prints a table of the
+powers of 2 that are less than or equal to 2^n.
+	#!/bin/bash
+echo Enter a number n
+read n
+for((i=0;i<=n;i++))
+do
+   answer=$((2**$i))
+   echo $i th power of 2 is $answer
+done
+
+2. Write a program that takes a command-line argument n and prints the nth harmonic
+number. Harmonic Number is of the form
+	#!/bin/bash
+echo Enter a number n
+read n
+hn=0
+for((i=1;i<=$n;i++))
+do
+   hn=`awk 'BEGIN{print '$hn'+1/'$i'}'`
+done
+echo harmonic number corresponding to n is $hn
+
+3. Write a program that takes a input and determines if the number is a prime.
+#!/bin/bash
+echo Enter a number
+read num
+flag=true
+for((i=2;i<$num;i++))
+do
+   if [ $((num%i)) -eq 0 ]
+   then
+   flag=false
+   echo num is not prime
+   break
+   fi
+done
+if [ "$flag" == true ]
+then
+   echo num is prime
+fi
+
+4. Extend the program to take a range of number as input and output the Prime
+Numbers in that range.
+#!/bin/bash
+echo Enter starting of the range
+read start
+echo Enter ending of the range
+read end
+isPrime(){
+   if [ $1 == 2 ]
+   then
+      flag=true
+      return
+   fi
+   for((j=2;j<$1;j++))
+   do
+      if [ $(($1%j)) -eq 0 ]
+      then
+      flag=false
+      break
+      fi
+   done
+}
+echo 'Prime numbers in the range are - '
+for((num=$start;num<=$end;num++))
+do
+   flag=true
+   isPrime $num
+   if [ $flag == true ]
+   then
+      echo $num
+   fi
+   flag=false
+done
+
+
+
+
+
+5. Write a program that computes a factorial of a number taken as input.
+5 Factorial – 5! = 1 * 2 * 3 * 4 * 5
+
+#!/bin/bash
+echo Enter a number n
+read n
+factorial=1
+for((i=1;i<=$n;i++))
+do
+   factorial=$((factorial * i))
+done
+echo factorial of $n is $factorial
+
+
+
+
+
+
+
+
+
+
+
+6. Write a program to compute Factors of a number N using prime factorization method.
+Logic -> Traverse till i*i <= N instead of i <= N for efficiency.
+O/P -> Print the prime factors of number N.
+
+#!/bin/bash
+echo Enter a number
+read num
+isPrime(){
+   if [ $1 == 2 ]
+   then
+      flag=true
+      return
+   fi
+   for((j=2;j<$1;j++))
+   do
+      if [ $(($1%j)) -eq 0 ]
+      then
+      flag=false
+      break
+      fi
+   done
+}
+echo Prime factors are -
+for((i=2;i<=$num;i++))
+do
+   if [ $(($num%i)) -eq 0 ]
+   then
+      flag=true
+      isPrime $i
+      if [ $flag == true ]
+      then
+         echo $i
+      fi
+      flag=false
+   fi
+done
+
+
+
+
+
+
+
+
+
+
+
+
+Repetition Practice Problems with while loop
+
+1. Write a program that takes a command-line argument n and prints a
+table of the powers of 2 that are less than or equal to 2^n till 256 is
+reached..
+
+#!/bin/bash
+echo Enter a number n
+read n
+powers=1
+i=0
+while [ $i -le $n -a $powers -ne 256 ]
+do
+powers=$((2**i))
+echo $i th power of 2 is $powers
+i=$(($i+1))
+done
+
+
+2. Find the Magic Number
+a. Ask the user to think of a number n between 1 to 100
+b. Then check with the user if the number is less then n/2 or greater
+c. Repeat till the Magic Number is reached..
+
+I came up with this logic on my own but was not able to get numbers like 11
+#!/bin/bash
+echo 'Select a number between 1 and 100 and keep it in your mind'
+flag=1
+num=50
+while [ $flag -eq 1 ]
+do
+   echo 'Press 1 if num ='$num
+   echo 'Press 2 if num >'$num
+   echo 'Press 3 if num <'$num
+   read input
+   case $input in
+   1)echo Yippe.. we got to your magic number
+      flag=0;;
+   2)num=$(($num+$num/2));;
+   3)num=$(($num/2));;
+   *)echo Enter correct input;;
+   esac
+done
+
+I looked up on the internet and understood this logic and implemented this
+
+#!/bin/bash
+echo 'Select a number between 1 and 100 and keep it in your mind'
+flag=1
+high=100
+low=1
+while [ $flag -eq 1 ]
+do
+   num=$((($high+$low)/2))
+   echo 'Press 1 if num ='$num
+   echo 'Press 2 if num <'$num
+   echo 'Press 3 if num >'$num
+   read input
+   case $input in
+   1)echo Yippe.. we got to your magic number
+      flag=0;;
+   2)high=$(($num-1));;
+   3)low=$(($num+1));;
+   *)echo Enter correct input;;
+   esac
+done
+
+
+3. Extend the Flip Coin problem till either Heads or Tails wins 11 times.
+#!/bin/bash
+head=0
+tail=0
+while [ $head -lt 11 -a $tail -lt 11 ]
+do
+   randomvar=$((RANDOM%2))
+   if [ $randomvar -eq 0 ]
+   then
+   ((head++))
+   else
+   ((tail++))
+   fi
+echo head" "$head
+echo tail" "$tail
+done
+
+4. Write a Program where a gambler starts with Rs 100 and places Re 1 bet
+until he/she goes broke i.e. no more money to gamble or reaches the
+goal of Rs 200. Keeps track of number of times won and number of bets
+made.
+
+#!/bin/bash
+flag=1
+goal=200
+money=100
+noOfBets=0
+noOfTimesWon=0
+while [ $flag -eq 1 ]
+do
+   if [ $money -eq $goal -o $money -eq 0 ]
+   then
+      flag=0
+   else
+      noOfBets=$(($noOfBets+1))
+      if [ $((RANDOM%2)) -eq 0 ]
+      then
+         money=$(($money+1))
+         noOfTimesWon=$(($noOfTimesWon+1))
+         echo 'Bet won! Money in hand: '$money
+      else
+         money=$(($money-1))
+         echo 'Bet Lost! Money in hand: '$money
+      fi
+   fi
+done
+echo "no of Bets :"$noOfBets
+echo "no of Times Won :"$noOfTimesWon
+if [ $money -eq $goal ]
+   then
+      echo Congratulations you won 100Rs
+fi
+if [ $money -eq 0 ]
+   then
+      echo Sorry you lost all your money
+
+
+
+Functions Practice Problems
+
+1. Help user find degF or degC based on their Conversion Selection. Use
+Case Statement and ensure that the inputs are within the Freezing Point (
+0 °C / 32 °F ) and the Boiling Point of Water ( 100 °C / 212 °F )
+a. degF = (degC * 9/5) + 32
+b. degC = (degF – 32) * 5/9
+#!/bin/bash
+echo Enter your choice
+echo 'Press 1 for degree Celsius to Fahrenheit'
+echo 'Press 2 for Fahrenheit to degree Celsius'
+read choice
+ans=0
+degFtoC(){
+if [ $1 -lt 0 -o $1 -gt 100 ]
+then
+   return 0
+fi
+echo 'in return - '$1
+ans=`awk 'BEGIN{print('$1'*(9/5))+32}'`
+return 1
+}
+degCtoF(){
+if [ $1 -lt 32 -o $1 -gt 212 ]
+then
+   return 0
+fi
+ans=`awk 'BEGIN{print('$1'-32)*(5/9)}'`
+return 1
+
+}
+case $choice in
+1)echo 'Enter Temperature in degree Celsius'
+   read temp
+   degFtoC $temp
+   if [ $? -ne 0 ]
+   then
+      echo 'Temperature in Fahrenheit - '$ans
+   else
+      echo 'Enter temperature in the range 0 - 100'
+   fi;;
+2)echo 'Enter Temperature in Fahrenheit'
+   read temp
+   degCtoF $temp
+   if [ $? -ne 0 ]
+   then
+      echo 'Temperature in Celsius - '$ans
+   else
+      echo 'Enter temperature in the range 32 - 212'
+   fi;;
+*)echo Enter proper choice;;
+esac
+
+2. Write a function to check if the two numbers are Palindromes
+#!/bin/bash
+echo enter first number
+read num
+echo enter second number
+read secondnum
+checkPalindrome(){
+   temp=$1
+   rev=0
+while [ $temp -gt 0 ]
+do
+    digit=$(($temp%10))
+    rev=$((rev*10+$digit))
+    temp=$(($temp/10))
+done
+if [ $2 -eq $rev ]
+then
+    echo "The numbers are palindrome of each other"
+else
+    echo "The numbers are not a palindrome of each other"
+fi
+}
+checkPalindrome $num $secondnum
+
+3. Take a number from user and check if the number is a Prime then show
+that its palindrome is also prime
+a. Write function check if number is Prime
+b. Write function to get the Palindrome.
+c. Check if the Palindrome number is also prime
+#!/bin/bash
+getPalindrome(){
+   temp=$1
+   rev=0
+while [ $temp -gt 0 ]
+do
+    digit=$(($temp%10))
+    rev=$((rev*10+$digit))
+    temp=$(($temp/10))
+done
+palindrome=$rev
+}
+isPrime(){
+   if [ $1 == 2 ]
+   then
+      flag=true
+      return
+   fi
+   for((j=2;j<$1;j++))
+   do
+      if [ $(($1%j)) -eq 0 ]
+      then
+      flag=false
+      break
+      fi
+   done
+}
+
+echo Enter a number
+read num
+palindrome=0
+flag=true
+isPrime $num
+if [ $flag == true ]
+then
+    echo $num is prime
+else
+   echo $num is not prime
+fi
+getPalindrome $num
+echo Palindrome of $num is $palindrome
+flag=true
+isPrime $palindrome
+if [ $flag == true ]
+then
+   echo $palindrome is prime
+else
+   echo $palindrome is not prime
+fi
+
+

@@ -1,0 +1,88 @@
+Dictionary Practice Problems
+1. Write a program in the following steps
+a. Roll a die and find the number between 1 to 6
+b. Repeat the Die roll and find the result each time
+c. Store the result in a dictionary
+d. Repeat till any one of the number has reached 10 times
+e. Find the number that reached maximum times and the one that was for minimum times
+
+#!/bin/bash
+declare -A diceArray
+#Initialize dice
+for((i=1;i<=6;i++))
+do
+   diceArray+=([$i]=0)
+done
+
+repeatFlag=1
+while [ $repeatFlag -eq 1 ]
+do
+   diceFace=$((RANDOM%6+1))
+   ((diceArray[$diceFace]++))
+   if [ ${diceArray[$diceFace]} -eq 10 ]
+   then
+      repeatFlag=0
+   fi
+done
+
+echo The dice numbers ${!diceArray[@]}
+echo have been casted ${diceArray[@]} number of times
+
+maxNoOfTimes=0
+maxDiceFace=1
+minDiceFace=1
+minNoOfTimes=999
+for((i=1;i<=6;i++))
+do
+   if [ ${diceArray[$i]} -gt $maxNoOfTimes ]
+   then
+      maxNoOfTimes=${diceArray[$i]}
+      maxDiceFace=$i
+   fi
+   if [ ${diceArray[$i]} -lt $minNoOfTimes ]
+   then
+      minNoOfTimes=${diceArray[$i]}
+      minDiceFace=$i
+   fi
+done
+echo Number that reached maximum is $maxDiceFace ,  $maxNoOfTimes no of times
+echo Number that reached minimum is $minDiceFace , $minNoOfTimes no of times
+
+
+
+
+
+
+2. Write a Program to generate a birth month of 50 individuals between the
+year 92 & 93. Find all the individuals having birthdays in the same month.
+Store it to finally print.
+
+#!/bin/bash
+declare -A Array1992
+declare -A Array1993
+#Initialize months
+for((i=1;i<=12;i++))
+do
+   Array1992+=([$i]=0)
+   Array1993+=([$i]=0)
+done
+
+for((i=1;i<=50;i++))
+do
+selectYear=$((RANDOM%2))
+birthMonth=$((RANDOM%12+1))
+if [ $selectYear -eq 0 ]
+then
+   ((Array1992[$birthMonth]++))
+else
+   ((Array1993[$birthMonth]++))
+fi
+done
+
+echo Months in 1992 are  ${!Array1992[@]}
+echo corresponding births${Array1992[@]}
+
+echo Months in 1993 are  ${!Array1993[@]}
+echo corresponding births${Array1993[@]}
+
+

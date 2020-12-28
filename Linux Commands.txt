@@ -1,0 +1,238 @@
+
+Move files from one folder to the respective folders. 
+
+$ touch abc.txt
+$ touch def.txt
+$ touch ghi.txt
+$ touch jkl.txt
+$ ls
+abc.txt  def.txt  ghi.txt  jkl.txt
+
+#!/bin/bash -x
+for file in `ls *.txt`
+do
+   foldername=`echo $file|awk -F. '{print $1}'`
+   echo $foldername
+   mkdir $foldername
+   mv $file $foldername/$file
+done
+
+Append current date to all log files name which has extension .log. 1 from a folder 
+
+$ touch abc.log.1
+$ touch def.log.1
+$ touch ghi.log.1
+$ touch jkl.log.1
+$ touch mno.log.1
+$ ls
+abc.log.1  def.log.1  ghi.log.1  jkl.log.1  mno.log.1
+
+#!/bin/bash -x
+for file in `ls *.log.1`
+do
+   basefilename=`echo $file|awk -F. '{print $1}'`
+   datename=`date +%d%m%y`
+   newfilename=$basefilename.log.$datename
+   mv $file $newfilename
+done
+
+Archive the files from /var/log folder which have modified 7 days ago and move it to your backup folder 
+
+#!/bin/bash -x
+destination=/f/Lnd/BridgeLabz/linux-content/backup
+for file in `find . -type f -mtime +7`
+do
+   mv $file $destination/$file
+done
+
+
+
+
+Print last 4 frequently access urls count in sorted order from /var/log/httpd/access.log 
+
+$ cat access.log | awk '{print $7}' | sort | uniq -c | sort -nr | head -4
+    199 /vendor.js
+    199 /scripts.js
+    199 /runtime.js
+    199 /favicon.ico
+
+Print list of last 4 frequently access unique urls at particular hours from /var/log/httpd/access.log 
+
+timestamp=[26/Oct/2019:20:14:42
+awk -F: '{ if($4==$timestamp) {print $7}}' access.log | sort | uniq -c | sort -nr | head-4
+
+Print list of web response code count in the unique sorted order at specific hours 
+
+timestamp=[26/Oct/2019:20:14:42
+awk -F: '{ if($4==$timestamp) {print $9}}' access.log | sort | uniq -c | sort -nr | head-4
+
+Print list of last 10 unique sorted client IP from /var/log/httpd/access.log 
+
+$ cat access.log | awk '{ print $NF}' | sort | uniq -c | sort -nr |tail -10
+      1 "51.15.209.93"
+      1 "38.145.76.11"
+      1 "209.97.150.153"
+      1 "209.17.96.90"
+      1 "209.17.96.138"
+      1 "159.65.250.185"
+      1 "159.203.27.87"
+      1 "158.58.133.52"
+      1 "111.93.191.38"
+      1 "104.248.217.125"
+$ cat access.log | awk '{ print $NF}' | sort | uniq -c | sort -nr | head -4
+   3049 "114.79.180.62"
+     33 "157.33.193.244"
+     17 "66.249.79.48"
+     15 "66.249.79.45"
+(In the sub question it was asked 4 and in the question it was asked 10, so printed both)
+
+
+
+
+
+
+Check if a folder exists or not. If it's not present, create it 
+
+
+#!/bin/bash -x
+echo Enter folder name
+read foldername
+if [ -d $foldername ]
+then
+   echo folder exists
+else
+   mkdir $foldername
+fi
+
+Execute command "hello" and "Is" and check its execution status and print whether command executed successful or not
+
+
+$ hello
+bash: hello: command not found
+
+pc@DESKTOP-GBP5KKD MINGW64 /f/Lnd/BridgeLabz/linux-content (master)
+$ $?
+bash: 127: command not found
+
+pc@DESKTOP-GBP5KKD MINGW64 /f/Lnd/BridgeLabz/linux-content (master)
+$ ls
+ 10000        ‘looping and conditionals'/
+ access.log   linux_chit_sheet.pdf      README.md
+ data.csv     linux_problem_sheet.pdf
+
+pc@DESKTOP-GBP5KKD MINGW64 /f/Lnd/BridgeLabz/linux-content (master)
+$ $?
+bash: 0: command not found
+
+Set environment usersecret="dH34xJaa23" if its already not set 
+
+if env | grep -q ^usersecret=
+then
+  echo env variable is already exported
+   printenv usersecret	
+
+else
+  echo env variable exported now
+  export  usersecret="dH34xJaa23"
+fi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Find a word "systemd" from all log files in the folder /var/log and print number of occurrence more than 0 against each file
+
+
+#!/bin/bash -x
+word=systemd
+for file in `ls`
+do
+   echo $file" "`grep -c $word $file`
+done
+
+
+(Ideally it should have been `ls | grep / -v` but that was not working)
+
+
+
+Create process list table displays process id, parent process id, command name, % of memory consumption, % of cpu utilization 
+
+$ ps | awk '{print $1 " " $2 "  " $8}'
+
+
+
+
+
+
+Data analysis / manipulation (Awk) 
+
+i) Print EmployeeName and TotalPay who has BasePay greater than 10000 
+
+
+$ awk '$4>1000 {print $2" "$7}' data.csv
+EmployeeName TotalPay
+NATHANIEL 567595
+GARY 538909
+ALBERT 335279
+CHRISTOPHER 332343
+PATRICK 326373
+DAVID 316285
+ALSON 315981
+DAVID 307899
+JOANNE 302377
+PATRICIA 297608
+EDWARD 294580
+
+ii) What is the aggregate TotalPay of employees whose jobtitle is 'CAPTAIN' 
+
+$ cat data.csv | grep CAPTAIN | awk '{sum+=$7}END{print sum}'
+1171796
+
+
+
+
+iii) Print JobTitle and Overtimepay who has Overtimepay is between 7000 and 10000 
+
+$ awk '$5>=7000 && $5<=10000 {print $3" "$5}' data.csv
+DEPUTYCHIEF 9737
+ASSTDEPUTY 8601
+
+iv) Print average BasePay 
+
+
+$ cat data.csv | awk '{sum+=$4}END{print sum/(NR-1)}'
+172333
+
+
+
+Find the difference between original file and the updated file. Apply changes to the original file. 
+
+$ ls
+original/  original-file.sh*  updated/  updated-file.sh*
+
+
+$ mv original-file.sh original/original-file.sh
+
+
+$ mv updated-file.sh updated/updated-file.sh
+
+$ ls
+original/  updated/
+
+$ diff -q original updated
+Only in original: original-file.sh
+Only in updated: updated-file.sh
+
+$ cp updated/updated-file.sh original-backup/updated-file.sh
+
+$ diff -q original-backup updated
